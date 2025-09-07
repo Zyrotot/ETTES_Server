@@ -21,6 +21,7 @@ var page = template.Must(template.New("index").Parse(`
     <form action="/run" method="POST">
         <label>Difficulty:
             <input type="number" name="difficulty" value="1" min="1" max="4">
+            (1 - Uktril, 2 - Geraktril, 3 - Reishid, 4 - Custom JSON)
         </label><br>
         <label>Arena:
             <input type="number" name="arena" value="1" min="1" max="3">
@@ -31,8 +32,8 @@ var page = template.Must(template.New("index").Parse(`
         <label>Runs:
             <input type="number" name="runs" value="1000">
         </label><br>
-        <label>JSON Input:</label><br>
-        <textarea name="json" rows="15" cols="80">
+        <label>Player JSON Input:</label><br>
+        <textarea name="player_json" rows="15" cols="80">
 {
   "name": "Bob",
   "hp": 205,
@@ -66,6 +67,36 @@ var page = template.Must(template.New("index").Parse(`
   ]
 }
         </textarea><br>
+        <label>Custom enemy JSON Input:</label><br>
+        <textarea name="enemy_json" rows="15" cols="80">
+{
+  "name": "Darius",
+  "hp": 130,
+  "ac": 27,
+  "dr": 13,
+  "fort": 30,
+  "curaAcelerada": 5,
+  "duroDeMatar": 0,
+  "duroDeFerir": 0,
+  "cleave": 0,
+  "flankImmune": false,
+  "rigidezRaivosa": true,
+  "perfectMobility": false,
+  "vampiricWeapon": false,
+  "erosion": false,
+  "isNPC": true,
+  "attacks": [
+    {
+      "name": "Machandejante",
+      "attackBonus": 20,
+      "damageDice": "4d6+27",
+      "critRange": 20,
+      "critBonus": 3
+    }
+  ]
+}
+
+        </textarea><br>
         <button type="submit">Run Simulation</button>
     </form>
 </body>
@@ -84,10 +115,17 @@ func main() {
 		}
 
 		// Save JSON input to file
-		jsonData := r.FormValue("json")
-		err := os.WriteFile("input.json", []byte(jsonData), 0644)
+		playerJsonData := r.FormValue("player_json")
+		err := os.WriteFile("player.json", []byte(playerJsonData), 0644)
 		if err != nil {
-			http.Error(w, "Failed to write input.json", http.StatusInternalServerError)
+			http.Error(w, "Failed to write player.json", http.StatusInternalServerError)
+			return
+		}
+
+		enemyJsonData := r.FormValue("enemy_json")
+		err = os.WriteFile("custom_enemy.json", []byte(enemyJsonData), 0644)
+		if err != nil {
+			http.Error(w, "Failed to write custom_enemy.json", http.StatusInternalServerError)
 			return
 		}
 
@@ -97,7 +135,7 @@ func main() {
 			"--arena="+r.FormValue("arena"),
 			"--runmode="+r.FormValue("runmode"),
 			"--runs="+r.FormValue("runs"),
-			"--json=input.json")
+			"--json=player.json")
 
 		// Pipe output back to the browser
 		stdout, _ := cmd.StdoutPipe()
