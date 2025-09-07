@@ -14,26 +14,92 @@ var page = template.Must(template.New("index").Parse(`
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Go Simulator</title>
+    <title>ExperimentalTabletopEncounterSimulator Online Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+        form label {
+            display: block;
+            margin: 10px 0 6px;
+            font-weight: bold;
+        }
+        input[type="number"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            display: block;
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #219150;
+        }
+        .hint {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Simulation Control</h1>
-    <form action="/run" method="POST">
-        <label>Difficulty:
+    <header>ExperimentalTabletopEncounterSimulator Online Server</header>
+    <main>
+        <h1>Simulation Control</h1>
+        <form action="/run" method="POST">
+            <label>Difficulty:</label>
             <input type="number" name="difficulty" value="1" min="1" max="4">
-            (1 - Uktril, 2 - Geraktril, 3 - Reishid, 4 - Custom JSON)
-        </label><br>
-        <label>Arena:
+            <div class="hint">(1 - Uktril, 2 - Geraktril, 3 - Reishid, 4 - Custom JSON)</div>
+
+            <label>Arena:</label>
             <input type="number" name="arena" value="1" min="1" max="3">
-        </label><br>
-        <label>Runmode:
+
+            <label>Runmode:</label>
             <input type="number" name="runmode" value="0" min="0" max="3">
-        </label><br>
-        <label>Runs:
+
+            <label>Runs:</label>
             <input type="number" name="runs" value="1000">
-        </label><br>
-        <label>Player JSON Input:</label><br>
-        <textarea name="player_json" rows="15" cols="80">
+
+            <label>Player JSON Input:</label>
+            <textarea name="player_json" rows="15">
 {
   "name": "Bob",
   "hp": 205,
@@ -66,9 +132,10 @@ var page = template.Must(template.New("index").Parse(`
     }
   ]
 }
-        </textarea><br>
-        <label>Custom enemy JSON Input:</label><br>
-        <textarea name="enemy_json" rows="15" cols="80">
+            </textarea>
+
+            <label>Custom Enemy JSON Input:</label>
+            <textarea name="enemy_json" rows="15">
 {
   "name": "Darius",
   "hp": 130,
@@ -95,10 +162,11 @@ var page = template.Must(template.New("index").Parse(`
     }
   ]
 }
+            </textarea>
 
-        </textarea><br>
-        <button type="submit">Run Simulation</button>
-    </form>
+            <button type="submit">Run Simulation</button>
+        </form>
+    </main>
 </body>
 </html>
 `))
